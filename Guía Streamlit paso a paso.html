@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<!-- saved from url=(0102)https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Streamlit paso a paso</title>
+<link href="./Guía Streamlit paso a paso_files/css2" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #F8F6F1;
+  --surface:  #FFFFFF;
+  --ink:      #1A1A18;
+  --muted:    #6B6860;
+  --border:   #E2DFD8;
+  --accent:   #C0392B;
+  --accent-l: #FDECEA;
+  --warn:     #7A4A10;
+  --warn-l:   #FDF0E0;
+  --info:     #1A4A7A;
+  --info-l:   #E4EEF8;
+  --ok:       #2A6049;
+  --ok-l:     #E4F0EB;
+  --c1: #C0392B; --c1l: #FDECEA;
+  --c2: #1A4A7A; --c2l: #E4EEF8;
+  --c3: #6B3A7A; --c3l: #F0E8F5;
+  --c4: #7A4A10; --c4l: #FDF0E0;
+  --c5: #1A5A5A; --c5l: #E2F4F4;
+  --c6: #2A6049; --c6l: #E4F0EB;
+  --c7: #3A4A1A; --c7l: #EEF0E2;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.page { max-width: 1220px; margin: 0 auto; padding: 52px 28px 100px; }
+
+/* HERO */
+.hero { border-bottom: 1px solid var(--border); padding-bottom: 40px; margin-bottom: 48px; }
+.hero-kicker { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.hero h1 { font-family: 'Instrument Serif', serif; font-size: 42px; font-weight: 400; line-height: 1.1; margin-bottom: 14px; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-lead { font-size: 16px; color: var(--muted); max-width: 580px; line-height: 1.65; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-l); color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 4px 12px; border-radius: 20px; margin-top: 16px; }
+
+/* INDEX */
+.index { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px 28px; margin-bottom: 52px; }
+.index-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.index ol { padding-left: 20px; }
+.index li { margin-bottom: 5px; }
+.index a { color: var(--accent); text-decoration: none; font-size: 14px; }
+.index a:hover { text-decoration: underline; }
+
+/* STEP */
+.step { margin-bottom: 56px; scroll-margin-top: 20px; }
+.step-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.step-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-top: 4px; }
+.step h2 { font-family: 'Instrument Serif', serif; font-size: 26px; font-weight: 400; line-height: 1.2; }
+.step p { color: var(--ink); margin-bottom: 14px; }
+.step p:last-child { margin-bottom: 0; }
+
+/* BOXES */
+.analogy { border-left: 3px solid var(--ok); background: var(--ok-l); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; font-size: 14px; color: #1A3A2A; }
+.analogy strong { color: var(--ok); }
+.warning { border-left: 3px solid var(--warn); background: var(--warn-l); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; font-size: 14px; color: #4A2A08; }
+.warning strong { color: var(--warn); }
+.info { border-left: 3px solid var(--info); background: var(--info-l); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; font-size: 14px; color: #0A2A4A; }
+.info strong { color: var(--info); }
+.new-badge { display: inline-block; background: #E4F0EB; color: #2A6049; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+.deprecated { display: inline-block; background: #FDF0E0; color: #7A4A10; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+
+/* CODE */
+.code-wrap { background: #1C1C1A; border-radius: 8px; margin: 18px 0; overflow: hidden; }
+.code-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; padding: 10px 16px 6px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+.code-label .fname { color: #CCC; }
+pre { font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.65; padding: 14px 16px; overflow-x: auto; color: #E8E6E0; }
+.kw  { color: #88BBFF; }
+.fn  { color: #AADDCC; }
+.st  { color: #FFCC88; }
+.cm  { color: #888; font-style: italic; }
+.nm  { color: #FFAAAA; }
+.dc  { color: #C792EA; }
+
+/* DIAGRAM */
+.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin: 20px 0; }
+.diagram-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; text-align: center; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+.data-table th { background: var(--bg); padding: 8px 12px; text-align: left; font-weight: 500; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table code { font-family: 'IBM Plex Mono', monospace; font-size: 12px; background: #F0EDE8; padding: 1px 5px; border-radius: 3px; }
+
+/* STREAMLIT MOCKUP */
+.app-mockup { background: #0E1117; border-radius: 12px; overflow: hidden; margin: 20px 0; }
+.app-topbar { background: #161B22; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #30363D; }
+.app-topbar-dot { width: 10px; height: 10px; border-radius: 50%; }
+.app-url { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8B949E; background: #21262D; padding: 3px 12px; border-radius: 4px; flex: 1; }
+.app-inner { display: flex; min-height: 280px; }
+.app-sidebar { width: 200px; background: #161B22; border-right: 1px solid #30363D; padding: 16px 14px; flex-shrink: 0; }
+.app-sidebar-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8B949E; margin-bottom: 12px; }
+.app-sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+.app-nav-item { font-size: 12px; padding: 6px 10px; border-radius: 4px; color: #CDD9E5; cursor: default; display: flex; align-items: center; gap: 8px; }
+.app-nav-item.active { background: #2D333B; color: #FFFFFF; }
+.app-main { flex: 1; padding: 24px 28px; }
+.app-title { font-size: 22px; font-weight: 600; color: #FFFFFF; margin-bottom: 6px; }
+.app-sub { font-size: 13px; color: #8B949E; margin-bottom: 20px; }
+.app-widget-label { font-size: 11px; color: #CDD9E5; margin-bottom: 4px; font-weight: 500; }
+.app-slider { width: 100%; height: 4px; background: #30363D; border-radius: 2px; appearance: none; margin-bottom: 14px; }
+.app-slider::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #FF4B4B; cursor: pointer; }
+.app-select { background: #21262D; border: 1px solid #30363D; border-radius: 4px; color: #CDD9E5; font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 5px 10px; width: 100%; margin-bottom: 14px; }
+.app-cols { display: flex; gap: 12px; }
+.app-col { flex: 1; background: #161B22; border: 1px solid #30363D; border-radius: 6px; padding: 12px; min-height: 70px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #8B949E; text-align: center; }
+.app-metric { background: #21262D; border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; }
+.app-metric-label { font-size: 10px; color: #8B949E; margin-bottom: 2px; }
+.app-metric-value { font-size: 20px; font-weight: 600; color: #FFFFFF; }
+.app-metric-delta { font-size: 11px; color: #3FB950; }
+.app-tabs { display: flex; gap: 0; border-bottom: 1px solid #30363D; margin-bottom: 16px; }
+.app-tab { font-size: 12px; color: #8B949E; padding: 6px 14px; cursor: default; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.app-tab.active { color: #FF4B4B; border-bottom-color: #FF4B4B; }
+.app-btn { background: #FF4B4B; color: white; border: none; border-radius: 4px; padding: 6px 16px; font-size: 12px; font-family: 'IBM Plex Mono', monospace; cursor: pointer; }
+.app-btn-sec { background: transparent; color: #CDD9E5; border: 1px solid #30363D; border-radius: 4px; padding: 6px 16px; font-size: 12px; font-family: 'IBM Plex Mono', monospace; cursor: pointer; }
+.app-file { border: 1px dashed #30363D; border-radius: 6px; padding: 14px; text-align: center; font-size: 11px; color: #8B949E; margin-bottom: 10px; }
+.app-success { background: #1B3A2A; border: 1px solid #3FB950; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #3FB950; margin-bottom: 10px; }
+.app-warning-box { background: #2D2200; border: 1px solid #9E6A03; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #E3B341; margin-bottom: 10px; }
+.app-info-box { background: #001B3A; border: 1px solid #1F6FEB; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #58A6FF; margin-bottom: 10px; }
+
+/* PIPELINE */
+.pipeline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 16px 0; }
+.pipe-step { text-align: center; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; min-width: 100px; }
+.pipe-arrow { color: var(--muted); font-size: 18px; flex-shrink: 0; }
+
+/* CACHE VIZ */
+.cache-grid { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+.cache-card { flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.cache-card-head { padding: 14px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 500; }
+.cache-card-body { padding: 12px 16px; font-size: 13px; color: var(--ink); }
+.cache-tag { display: inline-block; background: #F0EDE8; color: var(--muted); border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 2px 7px; margin: 2px 2px 2px 0; }
+
+/* FOLDER STRUCTURE */
+.folder { font-family: 'IBM Plex Mono', monospace; font-size: 13px; background: #1C1C1A; color: #E8E6E0; border-radius: 8px; padding: 16px 20px; line-height: 1.9; margin: 16px 0; }
+.folder .dir { color: #88BBFF; }
+.folder .file { color: #AADDCC; }
+.folder .note { color: #888; font-style: italic; }
+
+/* DIVIDER */
+.divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+/* FOOTER */
+footer { margin-top: 64px; padding-top: 28px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); text-align: center; }
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 30px; }
+  .app-sidebar { display: none; }
+  .cache-grid { flex-direction: column; }
+}
+@media print {
+  body { background: white; }
+  .page { padding: 20px; }
+  .app-mockup { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body cz-shortcut-listen="true">
+<div class="page">
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-kicker">STREAMLIT</p>
+  <h1>Streamlit paso a paso:<br><em></em></h1>
+ 
+</header>
+
+<!-- INDEX -->
+<nav class="index">
+  <p class="index-title">Contenidos</p>
+  <ol>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s1">¿Qué es Streamlit y para qué sirve?</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s2">Instalación y primer arranque</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s3">Crear y ejecutar tu primera app</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s4">Mostrar texto, datos y gráficos</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s5">Widgets de entrada: sliders, selectores, botones</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s6">Layout: columnas, tabs y sidebar</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s7">Subir ficheros e imágenes</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s8">Mensajes de estado: éxito, error, aviso</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s9">Aplicaciones multipágina</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s10">Caché: no repetir cálculos innecesarios</a></li>
+    <li><a href="https://informatica.iesalbarregas.com/pluginfile.php/25024/mod_resource/content/1/intro_streamlit.html#s11">Compartir la app en la nube (gratis)</a></li>
+  </ol>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 0: QUÉ ES STREAMLIT                       -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s1">
+  <div class="step-header">
+    <span class="step-num" style="background:#F0EDE8; color:#555;">Concepto base</span>
+    <h2>¿Qué es Streamlit y para qué sirve?</h2>
+  </div>
+
+  <p>Streamlit es una librería de Python que permite crear <strong>aplicaciones web interactivas</strong> escribiendo únicamente código Python. No hace falta saber HTML, CSS ni JavaScript.</p>
+
+  <div class="analogy">
+    <strong></strong> Si el notebook de Jupyter es tu cuaderno de laboratorio (solo tú lo ves y lo manejas), Streamlit es la <em>ventana al público</em>: convierte ese mismo código en una app que cualquier persona puede usar desde el navegador, sin instalar nada.
+  </div>
+
+  <div class="diagram">
+    <p class="diagram-title">Cuándo usar cada herramienta</p>
+    <table class="data-table">
+      <thead><tr><th>Herramienta</th><th>Para qué</th><th>Quién la usa</th></tr></thead>
+      <tbody>
+        <tr><td><code>Jupyter Notebook</code></td><td>Explorar datos, desarrollar y probar código</td><td>Solo el/la desarrollador/a</td></tr>
+        <tr><td><code>Streamlit</code></td><td>Desplegar una app interactiva lista para usar</td><td>Cualquier usuario final</td></tr>
+        <tr><td><code>Flask / Django</code></td><td>Aplicaciones web completas y complejas</td><td>Desarrolladores web con experiencia</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Streamlit es especialmente popular en proyectos de <strong>Inteligencia Artificial y Data Science</strong> porque permite mostrar modelos, gráficos y resultados de forma inmediata sin hacer frontend.</p>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 1: INSTALACIÓN                            -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s2">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c1l); color:var(--c1);">Paso 1</span>
+    <h2>Instalación y primer arranque</h2>
+  </div>
+
+  <p>Instalación con pip, igual que cualquier librería de Python:</p>
+
+  <div class="code-wrap">
+    <div class="code-label">Terminal</div>
+    <pre>pip install streamlit</pre>
+  </div>
+
+  <p>Una vez instalado, puedes comprobar que todo funciona lanzando la demo de bienvenida oficial:</p>
+
+  <div class="code-wrap">
+    <div class="code-label">Terminal</div>
+    <pre>streamlit hello</pre>
+  </div>
+
+  <p>Se abrirá automáticamente el navegador con una página de demos interactivas. Si se abre, la instalación fue correcta.</p>
+
+  <div class="info">
+    <strong>¿Qué versión tengo?</strong> Puedes comprobarla con <code>streamlit --version</code> en el terminal. La versión actual es la 1.x y es la que se usa en esta guía.
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 2: CREAR Y EJECUTAR                       -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s3">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c2l); color:var(--c2);">Paso 2</span>
+    <h2>Crear y ejecutar tu primera app</h2>
+  </div>
+
+  <p>A diferencia de un notebook, una app de Streamlit es un <strong>fichero Python normal</strong> (<code>app.py</code>). Lo escribes con cualquier editor (VS Code, PyCharm…) y lo ejecutas desde el terminal.</p>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py — la app más sencilla posible</div>
+    <pre><span class="kw">import</span> streamlit <span class="kw">as</span> st
+
+st.<span class="fn">title</span>(<span class="st">"Mi primera app"</span>)
+st.<span class="fn">write</span>(<span class="st">"Hola, mundo!"</span>)</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">Terminal — para lanzarla</div>
+    <pre>streamlit run app.py</pre>
+  </div>
+
+  <p>Streamlit abre automáticamente el navegador en <code>http://localhost:8501</code>. El resultado es:</p>
+
+  <div class="app-mockup">
+    <div class="app-topbar">
+      <div class="app-topbar-dot" style="background:#FF5F57;"></div>
+      <div class="app-topbar-dot" style="background:#FFBD2E;"></div>
+      <div class="app-topbar-dot" style="background:#28CA41;"></div>
+      <div class="app-url">localhost:8501</div>
+    </div>
+    <div class="app-inner">
+      <div class="app-main">
+        <div class="app-title">Mi primera app</div>
+        <div style="font-size:15px; color:#CDD9E5; margin-top:8px;">Hola, mundo!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <p class="diagram-title">Truco clave: "Always rerun"</p>
+    <p style="font-size:14px; color:var(--ink); margin-bottom:12px;">Cuando guardas cambios en <code>app.py</code>, Streamlit detecta el cambio y muestra un aviso arriba. Haz clic en <strong>"Always rerun"</strong> para que la app se recargue automáticamente cada vez que guardes. Así no tienes que recargar manualmente.</p>
+    <div style="background:#1C1C1A; border-radius:6px; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <span style="color:#E3B341; font-size:12px; font-family:&#39;IBM Plex Mono&#39;,monospace;">↻ Source file changed.</span>
+      <div style="display:flex; gap:8px;">
+        <span style="background:#30363D; color:#CDD9E5; font-size:11px; padding:4px 12px; border-radius:4px; font-family:&#39;IBM Plex Mono&#39;,monospace;">Rerun</span>
+        <span style="background:#FF4B4B; color:white; font-size:11px; padding:4px 12px; border-radius:4px; font-family:&#39;IBM Plex Mono&#39;,monospace;">Always rerun</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 3: MOSTRAR CONTENIDO                      -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s4">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c3l); color:var(--c3);">Paso 3</span>
+    <h2>Mostrar texto, datos y gráficos</h2>
+  </div>
+
+  <p>Streamlit tiene funciones específicas para cada tipo de contenido. La más flexible es <strong><code>st.write()</code></strong>: "entiende" lo que le pases y lo muestra de la forma más adecuada.</p>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py</div>
+    <pre><span class="kw">import</span> streamlit <span class="kw">as</span> st
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Texto</span>
+st.<span class="fn">title</span>(<span class="st">"Mi app de datos"</span>)           <span class="cm"># Título grande</span>
+st.<span class="fn">header</span>(<span class="st">"Sección 1"</span>)                <span class="cm"># Encabezado</span>
+st.<span class="fn">subheader</span>(<span class="st">"Subsección"</span>)            <span class="cm"># Subencabezado</span>
+st.<span class="fn">write</span>(<span class="st">"Texto normal con **negrita**"</span>) <span class="cm"># Admite Markdown</span>
+st.<span class="fn">markdown</span>(<span class="st">"- Item 1\n- Item 2"</span>)     <span class="cm"># Markdown completo</span>
+st.<span class="fn">code</span>(<span class="st">"print('hola')"</span>, language=<span class="st">"python"</span>)
+
+<span class="cm"># DataFrame</span>
+df = pd.<span class="fn">DataFrame</span>({
+    <span class="st">'Ciudad'</span>: [<span class="st">'Madrid'</span>, <span class="st">'Barcelona'</span>, <span class="st">'Sevilla'</span>],
+    <span class="st">'Población'</span>: [<span class="nm">3300000</span>, <span class="nm">1600000</span>, <span class="nm">690000</span>]
+})
+st.<span class="fn">dataframe</span>(df)             <span class="cm"># tabla interactiva (con filtros)</span>
+st.<span class="fn">table</span>(df)                 <span class="cm"># tabla estática</span>
+
+<span class="cm"># Gráficos rápidos</span>
+st.<span class="fn">line_chart</span>(np.<span class="fn">random</span>.<span class="fn">randn</span>(<span class="nm">50</span>))
+st.<span class="fn">bar_chart</span>(df.<span class="fn">set_index</span>(<span class="st">'Ciudad'</span>)[<span class="st">'Población'</span>])
+
+<span class="cm"># Mapa</span>
+map_data = pd.<span class="fn">DataFrame</span>(
+    np.random.<span class="fn">randn</span>(<span class="nm">100</span>, <span class="nm">2</span>) / [<span class="nm">50</span>, <span class="nm">50</span>] + [<span class="nm">40.4</span>, -<span class="nm">3.7</span>],
+    columns=[<span class="st">'lat'</span>, <span class="st">'lon'</span>]
+)
+st.<span class="fn">map</span>(map_data)             <span class="cm"># mapa centrado en Madrid</span></pre>
+  </div>
+
+  <div class="diagram">
+    <p class="diagram-title">Funciones de texto disponibles</p>
+    <table class="data-table">
+      <thead><tr><th>Función</th><th>Resultado visual</th></tr></thead>
+      <tbody>
+        <tr><td><code>st.title("…")</code></td><td>Título muy grande, encabezado de página</td></tr>
+        <tr><td><code>st.header("…")</code></td><td>Encabezado de sección (tamaño h2)</td></tr>
+        <tr><td><code>st.subheader("…")</code></td><td>Subencabezado (tamaño h3)</td></tr>
+        <tr><td><code>st.write("…")</code></td><td>Texto, Markdown, DataFrames, figuras… lo que sea</td></tr>
+        <tr><td><code>st.markdown("…")</code></td><td>Texto con sintaxis Markdown completa</td></tr>
+        <tr><td><code>st.caption("…")</code></td><td>Texto pequeño, como un pie de figura</td></tr>
+        <tr><td><code>st.code("…")</code></td><td>Bloque de código con resaltado de sintaxis</td></tr>
+        <tr><td><code>st.metric(label, value, delta)</code></td><td>Número grande con etiqueta y variación (↑/↓)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="app-mockup">
+    <div class="app-topbar">
+      <div class="app-topbar-dot" style="background:#FF5F57;"></div>
+      <div class="app-topbar-dot" style="background:#FFBD2E;"></div>
+      <div class="app-topbar-dot" style="background:#28CA41;"></div>
+      <div class="app-url">localhost:8501</div>
+    </div>
+    <div class="app-inner">
+      <div class="app-main">
+        <div class="app-title">Mi app de datos</div>
+        <div style="font-size:14px; font-weight:600; color:#CDD9E5; margin:10px 0 4px;">Sección 1</div>
+        <div style="font-size:13px; color:#8B949E; margin-bottom:14px;">Texto normal con <strong style="color:#CDD9E5;">negrita</strong></div>
+        <div class="app-cols" style="gap:12px; margin-bottom:14px;">
+          <div class="app-metric"><div class="app-metric-label">Usuarios</div><div class="app-metric-value">3.2M</div><div class="app-metric-delta">↑ 12%</div></div>
+          <div class="app-metric"><div class="app-metric-label">Ventas</div><div class="app-metric-value">€84K</div><div class="app-metric-delta">↑ 4%</div></div>
+          <div class="app-metric"><div class="app-metric-label">Errores</div><div class="app-metric-value">0.3%</div><div class="app-metric-delta" style="color:#F85149;">↓ 0.1%</div></div>
+        </div>
+        <div style="background:#161B22; border-radius:6px; height:60px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#8B949E;">📊 Gráfico de barras</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 4: WIDGETS                                -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s5">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c4l); color:var(--c4);">Paso 4</span>
+    <h2>Widgets de entrada: sliders, selectores, botones</h2>
+  </div>
+
+  <p>Los <strong>widgets</strong> son los controles interactivos de la app. Cuando el usuario mueve un slider o elige una opción, Streamlit <strong>re-ejecuta todo el script</strong> de arriba a abajo con el nuevo valor. Así funciona la reactividad en Streamlit.</p>
+
+  <div class="analogy">
+    <strong></strong> es como una hoja de cálculo. Cuando cambias el valor de una celda, todas las que dependen de ella se actualizan automáticamente. En Streamlit, cambiar un widget relanza todo el script.
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py</div>
+    <pre><span class="kw">import</span> streamlit <span class="kw">as</span> st
+
+<span class="cm"># Slider numérico</span>
+umbral = st.<span class="fn">slider</span>(<span class="st">"Valor de umbral"</span>, min_value=<span class="nm">0</span>, max_value=<span class="nm">255</span>, value=<span class="nm">127</span>)
+
+<span class="cm"># Selector desplegable</span>
+operacion = st.<span class="fn">selectbox</span>(<span class="st">"Elige una operación"</span>, [<span class="st">"Canny"</span>, <span class="st">"Blur"</span>, <span class="st">"Threshold"</span>])
+
+<span class="cm"># Casilla de verificación</span>
+mostrar_grises = st.<span class="fn">checkbox</span>(<span class="st">"Mostrar en escala de grises"</span>, value=<span class="nm">True</span>)
+
+<span class="cm"># Botón</span>
+<span class="kw">if</span> st.<span class="fn">button</span>(<span class="st">"Procesar imagen"</span>):
+    st.<span class="fn">write</span>(<span class="st">"Procesando..."</span>)
+
+<span class="cm"># Input de texto</span>
+nombre = st.<span class="fn">text_input</span>(<span class="st">"Nombre del fichero de salida"</span>, value=<span class="st">"resultado.png"</span>)
+
+<span class="cm"># Radio buttons</span>
+color = st.<span class="fn">radio</span>(<span class="st">"Color de contorno"</span>, [<span class="st">"Verde"</span>, <span class="st">"Rojo"</span>, <span class="st">"Azul"</span>])
+
+<span class="cm"># Los valores se usan igual que variables normales</span>
+st.<span class="fn">write</span>(<span class="st">f"Umbral seleccionado: </span>{umbral}<span class="st">"</span>)
+st.<span class="fn">write</span>(<span class="st">f"Operación: </span>{operacion}<span class="st">"</span>)</pre>
+  </div>
+
+  <div class="diagram">
+    <p class="diagram-title">Todos los widgets disponibles</p>
+    <table class="data-table">
+      <thead><tr><th>Widget</th><th>Para qué</th><th>Devuelve</th></tr></thead>
+      <tbody>
+        <tr><td><code>st.slider()</code></td><td>Valor numérico en un rango</td><td><code>int</code> o <code>float</code></td></tr>
+        <tr><td><code>st.selectbox()</code></td><td>Elegir una opción de una lista</td><td><code>str</code></td></tr>
+        <tr><td><code>st.multiselect()</code></td><td>Elegir varias opciones</td><td><code>list</code></td></tr>
+        <tr><td><code>st.radio()</code></td><td>Elegir una opción visible (radio buttons)</td><td><code>str</code></td></tr>
+        <tr><td><code>st.checkbox()</code></td><td>Activar / desactivar algo</td><td><code>bool</code></td></tr>
+        <tr><td><code>st.button()</code></td><td>Disparar una acción</td><td><code>bool</code> (True al pulsar)</td></tr>
+        <tr><td><code>st.text_input()</code></td><td>Introducir texto corto</td><td><code>str</code></td></tr>
+        <tr><td><code>st.text_area()</code></td><td>Introducir texto largo</td><td><code>str</code></td></tr>
+        <tr><td><code>st.number_input()</code></td><td>Introducir un número exacto</td><td><code>int</code> o <code>float</code></td></tr>
+        <tr><td><code>st.color_picker()</code></td><td>Seleccionar un color</td><td><code>str</code> (#HEX)</td></tr>
+        <tr><td><code>st.date_input()</code></td><td>Seleccionar una fecha</td><td><code>date</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 5: LAYOUT                                 -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s6">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c5l); color:var(--c5);">Paso 5</span>
+    <h2>Layout: columnas, tabs y sidebar</h2>
+  </div>
+
+  <p>Por defecto todo en Streamlit se apila verticalmente. Con las herramientas de <strong>layout</strong> puedes organizar el contenido en columnas, pestañas, acordeones y un panel lateral.</p>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py — columnas</div>
+    <pre><span class="cm"># Dos columnas de igual ancho</span>
+col1, col2 = st.<span class="fn">columns</span>(<span class="nm">2</span>)
+
+<span class="kw">with</span> col1:
+    st.<span class="fn">subheader</span>(<span class="st">"Imagen original"</span>)
+    st.<span class="fn">image</span>(imagen_original, use_container_width=<span class="nm">True</span>)
+
+<span class="kw">with</span> col2:
+    st.<span class="fn">subheader</span>(<span class="st">"Imagen procesada"</span>)
+    st.<span class="fn">image</span>(imagen_resultado, use_container_width=<span class="nm">True</span>)</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py — tabs (pestañas)</div>
+    <pre>tab1, tab2, tab3 = st.<span class="fn">tabs</span>([<span class="st">"Bordes"</span>, <span class="st">"Contornos"</span>, <span class="st">"Medición"</span>])
+
+<span class="kw">with</span> tab1:
+    st.<span class="fn">write</span>(<span class="st">"Resultado de la detección de bordes"</span>)
+    st.<span class="fn">image</span>(bordes)
+
+<span class="kw">with</span> tab2:
+    st.<span class="fn">write</span>(<span class="st">"Contornos detectados"</span>)
+    st.<span class="fn">image</span>(img_contornos)</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py — sidebar (panel lateral)</div>
+    <pre><span class="cm"># Todo lo que se ponga dentro de st.sidebar va al panel izquierdo</span>
+<span class="kw">with</span> st.<span class="fn">sidebar</span>:
+    st.<span class="fn">header</span>(<span class="st">"⚙️ Configuración"</span>)
+    operacion = st.<span class="fn">selectbox</span>(<span class="st">"Operación"</span>, [<span class="st">"Canny"</span>, <span class="st">"Blur"</span>])
+    umbral = st.<span class="fn">slider</span>(<span class="st">"Umbral"</span>, <span class="nm">0</span>, <span class="nm">255</span>, <span class="nm">127</span>)</pre>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py — expander (acordeón)</div>
+    <pre><span class="kw">with</span> st.<span class="fn">expander</span>(<span class="st">"Ver código fuente del procesamiento"</span>):
+    st.<span class="fn">code</span>(<span class="st">"""
+bordes = cv2.Canny(img_gris, 100, 200)
+contornos, _ = cv2.findContours(...)
+    """</span>, language=<span class="st">"python"</span>)</pre>
+  </div>
+
+  <div class="app-mockup">
+    <div class="app-topbar">
+      <div class="app-topbar-dot" style="background:#FF5F57;"></div>
+      <div class="app-topbar-dot" style="background:#FFBD2E;"></div>
+      <div class="app-topbar-dot" style="background:#28CA41;"></div>
+      <div class="app-url">localhost:8501</div>
+    </div>
+    <div class="app-inner">
+      <div class="app-sidebar">
+        <div class="app-sidebar-title">Configuración</div>
+        <div class="app-widget-label">Operación</div>
+        <select class="app-select"><option>Detección de bordes (Canny)</option></select>
+        <div class="app-widget-label">Umbral inferior: 100</div>
+        <input type="range" class="app-slider" min="0" max="255" value="100">
+        <div class="app-widget-label">Umbral superior: 200</div>
+        <input type="range" class="app-slider" min="0" max="255" value="200">
+      </div>
+      <div class="app-main">
+        <div class="app-title" style="font-size:16px;">📷 Procesamiento con OpenCV</div>
+        <div class="app-tabs">
+          <div class="app-tab active">Bordes</div>
+          <div class="app-tab">Contornos</div>
+          <div class="app-tab">Medición</div>
+        </div>
+        <div class="app-cols">
+          <div class="app-col">🖼️ Imagen original</div>
+          <div class="app-col">✅ Imagen procesada</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning">
+    <strong>⚠️ Deprecado:</strong> en versiones anteriores se usaba <code>use_column_width=True</code> en <code>st.image()</code>. Esto está deprecado. Usa <code>use_container_width=True</code> en su lugar.
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 6: SUBIR FICHEROS                         -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s7">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c6l); color:var(--c6);">Paso 6</span>
+    <h2>Subir ficheros e imágenes</h2>
+  </div>
+
+  <p>Con <strong><code>st.file_uploader()</code></strong> el usuario puede arrastrar y soltar ficheros directamente en la app. El fichero subido llega como un objeto de Python que puedes leer con las librerías habituales.</p>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py — subir una imagen para procesarla con OpenCV</div>
+    <pre><span class="kw">import</span> streamlit <span class="kw">as</span> st
+<span class="kw">import</span> cv2
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> PIL <span class="kw">import</span> Image
+
+archivo = st.<span class="fn">file_uploader</span>(
+    <span class="st">"Sube una imagen"</span>,
+    type=[<span class="st">"jpg"</span>, <span class="st">"jpeg"</span>, <span class="st">"png"</span>]   <span class="cm"># formatos permitidos</span>
+)
+
+<span class="kw">if</span> archivo <span class="kw">is not None</span>:
+    <span class="cm"># Convertir el fichero subido a un array de NumPy</span>
+    img_pil = Image.<span class="fn">open</span>(archivo)
+    img_np  = np.<span class="fn">array</span>(img_pil)           <span class="cm"># array RGB</span>
+    img_bgr = cv2.<span class="fn">cvtColor</span>(img_np, cv2.COLOR_RGB2BGR)
+
+    <span class="cm"># Mostrar la imagen original</span>
+    st.<span class="fn">image</span>(img_np, caption=<span class="st">"Imagen cargada"</span>, use_container_width=<span class="nm">True</span>)
+
+    <span class="cm"># Aquí ya puedes procesar img_bgr con OpenCV</span>
+    img_gris = cv2.<span class="fn">cvtColor</span>(img_bgr, cv2.COLOR_BGR2GRAY)
+    st.<span class="fn">image</span>(img_gris, caption=<span class="st">"Escala de grises"</span>, use_container_width=<span class="nm">True</span>)
+<span class="kw">else</span>:
+    st.<span class="fn">info</span>(<span class="st">"Sube una imagen para comenzar."</span>)</pre>
+  </div>
+
+  <div class="app-mockup">
+    <div class="app-topbar">
+      <div class="app-topbar-dot" style="background:#FF5F57;"></div>
+      <div class="app-topbar-dot" style="background:#FFBD2E;"></div>
+      <div class="app-topbar-dot" style="background:#28CA41;"></div>
+      <div class="app-url">localhost:8501</div>
+    </div>
+    <div class="app-inner">
+      <div class="app-main">
+        <div class="app-title" style="font-size:16px;">📷 Sube tu imagen</div>
+        <div class="app-file">Arrastra aquí tu imagen o haz clic para seleccionarla<br><span style="color:#FF4B4B; font-size:10px;">JPG, JPEG, PNG</span></div>
+        <div class="app-info-box">ℹ️ Sube una imagen para comenzar.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info">
+    <strong>Otros tipos de fichero soportados:</strong> también puedes subir CSV, PDF, Excel, audio, vídeo… El parámetro <code>type</code> acepta cualquier extensión. Si lo omites, acepta cualquier formato.
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 7: MENSAJES DE ESTADO                     -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s8">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c7l); color:var(--c7);">Paso 7</span>
+    <h2>Mensajes de estado: éxito, error, aviso</h2>
+  </div>
+
+  <p>Streamlit tiene mensajes de estado visuales para comunicarle al usuario qué está pasando: si algo fue bien, si hay un error, si hay que esperar…</p>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py</div>
+    <pre><span class="cm"># Mensajes de estado</span>
+st.<span class="fn">success</span>(<span class="st">"Imagen procesada correctamente."</span>)
+st.<span class="fn">error</span>(<span class="st">"No se pudo cargar el fichero."</span>)
+st.<span class="fn">warning</span>(<span class="st">"El umbral es muy bajo, puede haber ruido."</span>)
+st.<span class="fn">info</span>(<span class="st">"Sube una imagen para comenzar."</span>)
+
+<span class="cm"># Indicador de carga (spinner) durante un proceso largo</span>
+<span class="kw">with</span> st.<span class="fn">spinner</span>(<span class="st">"Procesando imagen..."</span>):
+    resultado = <span class="fn">procesar_imagen</span>(imagen)   <span class="cm"># operación lenta</span>
+
+st.<span class="fn">success</span>(<span class="st">"¡Listo!"</span>)
+
+<span class="cm"># Barra de progreso</span>
+barra = st.<span class="fn">progress</span>(<span class="nm">0</span>)
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">100</span>):
+    barra.<span class="fn">progress</span>(i + <span class="nm">1</span>)</pre>
+  </div>
+
+  <div class="app-mockup">
+    <div class="app-topbar">
+      <div class="app-topbar-dot" style="background:#FF5F57;"></div>
+      <div class="app-topbar-dot" style="background:#FFBD2E;"></div>
+      <div class="app-topbar-dot" style="background:#28CA41;"></div>
+      <div class="app-url">localhost:8501</div>
+    </div>
+    <div class="app-inner">
+      <div class="app-main">
+        <div class="app-success">✅ Imagen procesada correctamente.</div>
+        <div style="background:#2D1515; border:1px solid #F85149; border-radius:4px; padding:8px 12px; font-size:12px; color:#F85149; margin-bottom:10px;">🔴 No se pudo cargar el fichero.</div>
+        <div class="app-warning-box">⚠️ El umbral es muy bajo, puede haber ruido.</div>
+        <div class="app-info-box">ℹ️ Sube una imagen para comenzar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 8: MULTIPÁGINA                            -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s9">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c1l); color:var(--c1);">Paso 8</span>
+    <h2>Aplicaciones multipágina</h2>
+  </div>
+
+  <p>Cuando la app crece, conviene dividirla en varias páginas. Streamlit lo hace con una <strong>carpeta <code>pages/</code></strong>: cada fichero <code>.py</code> dentro de esa carpeta se convierte automáticamente en una página con su propio enlace en el menú lateral.</p>
+
+  <div class="folder">
+    <span class="dir">mi_proyecto/</span><br>
+    ├── <span class="file">app.py</span>         <span class="note">← página principal (se ejecuta con streamlit run)</span><br>
+    ├── <span class="dir">pages/</span><br>
+    │   ├── <span class="file">1_Cargar_imagen.py</span>    <span class="note">← página 1</span><br>
+    │   ├── <span class="file">2_Procesar.py</span>         <span class="note">← página 2</span><br>
+    │   └── <span class="file">3_Resultados.py</span>       <span class="note">← página 3</span><br>
+    └── <span class="file">requirements.txt</span>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">Terminal — se ejecuta igual que siempre</div>
+    <pre>streamlit run app.py</pre>
+  </div>
+
+  <p>Streamlit detecta la carpeta <code>pages/</code> automáticamente y crea el menú de navegación lateral. El número al inicio del nombre del fichero controla el orden en el menú.</p>
+
+  <div class="app-mockup">
+    <div class="app-topbar">
+      <div class="app-topbar-dot" style="background:#FF5F57;"></div>
+      <div class="app-topbar-dot" style="background:#FFBD2E;"></div>
+      <div class="app-topbar-dot" style="background:#28CA41;"></div>
+      <div class="app-url">localhost:8501</div>
+    </div>
+    <div class="app-inner">
+      <div class="app-sidebar">
+        <div class="app-sidebar-title">Navegación</div>
+        <div class="app-sidebar-nav">
+          <div class="app-nav-item active">🏠 Inicio</div>
+          <div class="app-nav-item">📁 Cargar imagen</div>
+          <div class="app-nav-item">⚙️ Procesar</div>
+          <div class="app-nav-item">📊 Resultados</div>
+        </div>
+      </div>
+      <div class="app-main">
+        <div class="app-title" style="font-size:16px;">🏠 Página principal</div>
+        <div style="font-size:13px; color:#8B949E;">Selecciona una sección en el menú de la izquierda.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info">
+    <strong>Alternativa moderna:</strong> desde Streamlit 1.36 también existe <code>st.navigation()</code> para definir páginas directamente en el código, con más control sobre la navegación. Para proyectos sencillos, la carpeta <code>pages/</code> es más que suficiente.
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 9: CACHÉ                                  -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s10">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c2l); color:var(--c2);">Paso 9</span>
+    <h2>Caché: no repetir cálculos innecesarios</h2>
+  </div>
+
+  <p>Recuerda que Streamlit re-ejecuta <em>todo el script</em> cada vez que el usuario interactúa. Si tienes una operación lenta (cargar un modelo de IA, leer un CSV enorme, procesar una imagen pesada), se repetiría en cada clic. La caché evita eso.</p>
+
+  <div class="analogy">
+    <strong></strong> es como guardar el resultado de una cuenta complicada en un post-it. La primera vez la calculas, la apuntas, y las siguientes veces miras el post-it en lugar de calcularla de nuevo.
+  </div>
+
+  <div class="cache-grid">
+    <div class="cache-card">
+      <div class="cache-card-head" style="background:var(--c1l); color:var(--c1);">@st.cache_data</div>
+      <div class="cache-card-body">
+        <p style="margin-bottom:10px; font-size:13px;">Para <strong>datos</strong>: resultados que se pueden serializar y guardar.</p>
+        <span class="cache-tag">DataFrames</span>
+        <span class="cache-tag">listas</span>
+        <span class="cache-tag">diccionarios</span>
+        <span class="cache-tag">arrays NumPy</span>
+        <span class="cache-tag">llamadas a API</span>
+        <span class="cache-tag">resultados de cálculos</span>
+      </div>
+    </div>
+    <div class="cache-card">
+      <div class="cache-card-head" style="background:var(--c2l); color:var(--c2);">@st.cache_resource</div>
+      <div class="cache-card-body">
+        <p style="margin-bottom:10px; font-size:13px;">Para <strong>recursos</strong>: objetos que no se pueden serializar.</p>
+        <span class="cache-tag">modelos de ML</span>
+        <span class="cache-tag">conexiones BD</span>
+        <span class="cache-tag">clientes de API</span>
+        <span class="cache-tag">objetos grandes únicos</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">app.py — ejemplo con caché</div>
+    <pre><span class="kw">import</span> streamlit <span class="kw">as</span> st
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># Sin caché: se recargaría el CSV en cada interacción del usuario</span>
+<span class="cm"># Con caché: se carga una sola vez y se reutiliza</span>
+
+<span class="dc">@st.cache_data</span>
+<span class="kw">def</span> <span class="fn">cargar_datos</span>(ruta):
+    <span class="cm"># Esta función solo se ejecuta la primera vez</span>
+    <span class="kw">return</span> pd.<span class="fn">read_csv</span>(ruta)
+
+<span class="dc">@st.cache_resource</span>
+<span class="kw">def</span> <span class="fn">cargar_modelo</span>():
+    <span class="cm"># Los modelos de IA son lentos de cargar → se cachean con resource</span>
+    <span class="kw">import</span> pickle
+    <span class="kw">with</span> <span class="fn">open</span>(<span class="st">"modelo.pkl"</span>, <span class="st">"rb"</span>) <span class="kw">as</span> f:
+        <span class="kw">return</span> pickle.<span class="fn">load</span>(f)
+
+<span class="cm"># Uso: igual que una función normal</span>
+df = <span class="fn">cargar_datos</span>(<span class="st">"datos.csv"</span>)
+modelo = <span class="fn">cargar_modelo</span>()
+
+st.<span class="fn">dataframe</span>(df)</pre>
+  </div>
+
+  <div class="warning">
+    <strong>⚠️ Nota:</strong> el decorador <code>@st.cache</code> (sin sufijo) está <strong>obsoleto</strong> y eliminado en versiones recientes. Usa siempre <code>@st.cache_data</code> o <code>@st.cache_resource</code> según el caso.
+  </div>
+</section>
+
+<hr class="divider">
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- PASO 10: COMPARTIR                             -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="step" id="s11">
+  <div class="step-header">
+    <span class="step-num" style="background:var(--c3l); color:var(--c3);">Paso 10</span>
+    <h2>Compartir la app en la nube — gratis</h2>
+  </div>
+
+  <p>Una vez que la app funciona en local, puedes publicarla en internet de forma gratuita con <strong>Streamlit Community Cloud</strong>. Cualquier persona podrá usarla sin instalar nada.</p>
+
+  <div class="diagram">
+    <p class="diagram-title">Pasos para publicar la app</p>
+    <div class="pipeline" style="flex-direction:column; align-items:flex-start; gap:16px;">
+
+      <div style="display:flex; gap:14px; align-items:flex-start; width:100%;">
+        <div style="background:var(--c1l); color:var(--c1); font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:13px; font-weight:500; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">1</div>
+        <div>
+          <p style="font-weight:500; margin-bottom:4px;">Prepara el repositorio en GitHub</p>
+          <p style="font-size:13px; color:var(--muted);">Tu proyecto debe tener estos dos ficheros como mínimo:</p>
+          <div class="folder" style="margin-top:8px; font-size:12px;">
+            <span class="dir">mi_proyecto/</span><br>
+            ├── <span class="file">app.py</span><br>
+            └── <span class="file">requirements.txt</span>   <span class="note">← lista de librerías</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:14px; align-items:flex-start; width:100%;">
+        <div style="background:var(--c2l); color:var(--c2); font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:13px; font-weight:500; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">2</div>
+        <div>
+          <p style="font-weight:500; margin-bottom:4px;">Crea el fichero requirements.txt</p>
+          <div class="code-wrap" style="margin-top:8px;">
+            <div class="code-label"><span class="fname">requirements.txt</span></div>
+            <pre>streamlit
+opencv-python-headless
+numpy
+Pillow</pre>
+          </div>
+          <p style="font-size:12px; color:var(--muted); margin-top:6px;">Usa <code>opencv-python-headless</code> en la nube (no tiene interfaz gráfica). Localmente puedes usar <code>opencv-python</code>.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:14px; align-items:flex-start; width:100%;">
+        <div style="background:var(--c3l); color:var(--c3); font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:13px; font-weight:500; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">3</div>
+        <div>
+          <p style="font-weight:500; margin-bottom:4px;">Sube el proyecto a GitHub</p>
+          <div class="code-wrap" style="margin-top:8px;">
+            <div class="code-label">Terminal</div>
+            <pre>git init
+git add .
+git commit -m "mi app streamlit"
+git push origin main</pre>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:14px; align-items:flex-start; width:100%;">
+        <div style="background:var(--c6l); color:var(--c6); font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:13px; font-weight:500; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">4</div>
+        <div>
+          <p style="font-weight:500; margin-bottom:4px;">Despliega en Streamlit Community Cloud</p>
+          <p style="font-size:13px; color:var(--muted);">Ve a <strong>share.streamlit.io</strong>, inicia sesión con tu cuenta de GitHub, haz clic en <strong>"Deploy an app"</strong> y pega la URL de tu repositorio. En unos minutos tu app estará online en una URL pública del tipo:</p>
+          <div style="background:#1C1C1A; border-radius:6px; padding:10px 16px; margin-top:10px; font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:13px; color:#AADDCC;">
+            https://tu-usuario-mi-app.streamlit.app
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- RESUMEN -->
+<section style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:28px 32px; margin-bottom:48px;">
+  <p style="font-family:&#39;IBM Plex Mono&#39;,monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:16px;">Resumen: funciones de Streamlit más usadas</p>
+  <table class="data-table">
+    <thead><tr><th>Función</th><th>¿Qué hace?</th></tr></thead>
+    <tbody>
+      <tr><td><code>st.title / header / subheader / write / markdown</code></td><td>Mostrar texto con distintos tamaños</td></tr>
+      <tr><td><code>st.image(img, use_container_width=True)</code></td><td>Mostrar una imagen</td></tr>
+      <tr><td><code>st.dataframe(df)</code></td><td>Tabla interactiva con filtros y ordenación</td></tr>
+      <tr><td><code>st.metric(label, value, delta)</code></td><td>Número grande con etiqueta y delta</td></tr>
+      <tr><td><code>st.line_chart / bar_chart / map</code></td><td>Gráficos rápidos sin configuración</td></tr>
+      <tr><td><code>st.slider / selectbox / checkbox / button</code></td><td>Widgets de entrada del usuario</td></tr>
+      <tr><td><code>st.file_uploader(type=[…])</code></td><td>Subir ficheros desde el navegador</td></tr>
+      <tr><td><code>st.columns(n)</code></td><td>Dividir el área en columnas</td></tr>
+      <tr><td><code>st.tabs([…])</code></td><td>Pestañas para organizar contenido</td></tr>
+      <tr><td><code>st.sidebar</code></td><td>Panel lateral de configuración</td></tr>
+      <tr><td><code>st.expander("…")</code></td><td>Sección colapsable</td></tr>
+      <tr><td><code>st.success / error / warning / info</code></td><td>Mensajes de estado visuales</td></tr>
+      <tr><td><code>st.spinner("…")</code></td><td>Indicador de carga durante procesos lentos</td></tr>
+      <tr><td><code>@st.cache_data</code></td><td>Caché para datos y resultados de cálculos</td></tr>
+      <tr><td><code>@st.cache_resource</code></td><td>Caché para modelos de ML y conexiones</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <p>STREAMLIT</p>
+</footer>
+
+</div>
+
+
+</body></html>
